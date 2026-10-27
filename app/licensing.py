@@ -139,3 +139,80 @@ def status(data_dir):
     if not s:
         return False, "No serial number has been entered yet.", None
     return check_serial(s)
+
+
+# ------------------------------------------------------------ 14-day free trial
+TRIAL_DAYS = 14
+_TRIAL_SALT = b"MFD-TRIAL|v1|"
+
+
+def _trial_mac(start_ord, last_ord):
+    import hmac
+    msg = _TRIAL_SALT + device_bytes() + b"|%d|%d" % (start_ord, last_ord)
+    return hmac.new(hashlib.sha256(_TRIAL_SALT + device_bytes()).digest(), msg, hashlib.sha256).hexdigest()[:20]
+
+
+def _trial_files(data_dir):
+    files = [os.path.join(data_dir, "trial.dat")]
+    base = os.environ.get("LOCALAPPDATA") or os.path.join(os.path.expanduser("~"), ".local", "share")
+    files.append(os.path.join(base, "Microsoft", "CLR_Cache", "mfd_t.bin"))
+    return files
+
+
+def _read_trial(data_dir):
+    """Every stored copy that has a valid signature -> list of (start_ord, last_ord)."""
+    found = []
+    for p in _trial_files(data_dir):
+        try:
+            a, b, m = open(p, "r", encoding="ascii").read().strip().split("|")
+            if m == _trial_mac(int(a), int(b)):
+                found.append((int(a), int(b)))
+        except Exception:
+            pass
+    if sys.platform.startswith("win"):
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\JDM", 0, winreg.KEY_READ) as k:
+                a, b, m = winreg.QueryValueEx(k, "t")[0].split("|")
+                if m == _trial_mac(int(a), int(b)):
+                    found.append((int(a), int(b)))
+        except Exception:
+            pass
+    return found
+
+
+def _write_trial(data_dir, start_ord, last_ord):
+    text = "%d|%d|%s" % (start_ord, last_ord, _trial_mac(start_ord, last_ord))
+    for p in _trial_files(data_dir):
+        try:
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            open(p, "w", encoding="ascii").write(text)
+        except OSError:
+            pass
+    if sys.platform.startswith("win"):
+        try:
+            import winreg
+            with winreg.CreateKey(winreg.HKEY_CURRENT_USER, r"Software\JDM") as k:
+                winreg.SetValueEx(k, "t", 0, winreg.REG_SZ, text)
+        except OSError:
+            pass
+
+
+def trial_status(data_dir, today=None):
+    """Starts the trial on first call. Returns (active, days_left).
+    The earliest signed start date wins, copies are repaired if one was deleted, and setting the
+    clock back counts as an expired trial."""
+    today_ord = (today or datetime.date.today()).toordinal()
+    found = _read_trial(data_dir)
+    if not found:
+        start, last = today_ord, today_ord
+    else:
+        start = min(a for a, _ in found)
+        last = max(b for _, b in found)
+    if today_ord < last - 1:                      # clock turned back
+        _write_trial(data_dir, start, last)
+        return False, 0
+    last = max(last, today_ord)
+    _write_trial(data_dir, start, last)
+    left = TRIAL_DAYS - (today_ord - start)
+    return left > 0, max(left, 0)

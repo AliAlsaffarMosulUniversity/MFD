@@ -841,7 +841,7 @@ class LanguageDialog(QDialog):
 
 class ActivationDialog(QDialog):
     """Shown until a valid serial number for THIS computer is entered."""
-    def __init__(self, reason=""):
+    def __init__(self, reason="", trial_left=0):
         super().__init__()
         self.setWindowTitle(f"{APP_NAME} – {T('Activation')}")
         self.setWindowIcon(QIcon(resource(os.path.join("assets", "jdm.ico"))))
@@ -883,6 +883,10 @@ class ActivationDialog(QDialog):
         row.addWidget(terms)
         row.addStretch(1)
         row.addWidget(quit_)
+        if trial_left > 0:
+            cont = QPushButton(T("Continue trial ({n} days left)", n=trial_left))
+            cont.clicked.connect(self.reject)
+            row.addWidget(cont)
         row.addWidget(act)
         lay = QVBoxLayout(self)
         lay.addWidget(logo)
@@ -1470,6 +1474,9 @@ class MainWindow(QMainWindow):
 
     def _license_line(self):
         _ok, _why, exp = licensing.status(data_dir())
+        if not _ok:
+            _a, left = licensing.trial_status(data_dir())
+            return T("Free trial – {n} days left – Device ID: {d}", n=left, d=licensing.device_id())
         line = T("Licensed to this computer – Device ID: {d}", d=licensing.device_id())
         if exp:
             line += " – " + T("Expires: {d}", d=exp.isoformat())
@@ -1489,8 +1496,13 @@ class MainWindow(QMainWindow):
             f"{T('Multi-connection downloads, pause/resume, scheduler, speed limiter, browser capture, video downloads and a built-in media player.')}"
             f"<br><br>FFmpeg: {ff}<br>Deno: {dd}")
         upd = box.addButton(T("Check for updates"), QMessageBox.ActionRole)
+        act = None
+        if not licensing.status(data_dir())[0]:
+            act = box.addButton(T("Activate"), QMessageBox.ActionRole)
         box.addButton(T("Close"), QMessageBox.RejectRole)
         box.exec()
+        if act is not None and box.clickedButton() is act:
+            ActivationDialog().exec()
         if box.clickedButton() is upd:
             self.check_updates(manual=True)
 
@@ -1716,9 +1728,13 @@ def main():
         app.setLayoutDirection(Qt.RightToLeft)
     ok, why, _exp = licensing.status(data_dir())
     if not ok:                                         # no valid serial for THIS computer
-        dlg = ActivationDialog("" if why.startswith("No serial") else T(why))
-        if dlg.exec() != QDialog.Accepted:
-            return 0
+        t_active, t_left = licensing.trial_status(data_dir())
+        if not t_active or t_left <= 3:                # trial over (or ending soon): ask for a serial
+            reason = T(why) if not why.startswith("No serial") else \
+                ("" if t_active else T("Your 14-day free trial has ended. Please enter a serial number."))
+            dlg = ActivationDialog(reason, trial_left=t_left if t_active else 0)
+            if dlg.exec() != QDialog.Accepted and not t_active:
+                return 0
     settings["ffmpeg_path"] = find_tool("ffmpeg")
     settings["deno_path"] = find_tool("deno")
     w = MainWindow(settings, start_hidden="--minimized" in args)

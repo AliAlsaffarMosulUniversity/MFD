@@ -64,3 +64,6 @@ Email: alsfarly2@gmail.com · Support free service software – MasterCard: 2144
 Installers are published (by the workflow, on a `v*` tag) to the PUBLIC repository `MFD-Download`, which also hosts the
 one-click download page with GitHub Pages. This repository can therefore stay private.
 Required secret in this repository: `RELEASES_TOKEN` (fine-grained token with *Contents: Read and write* on `MFD-Download`).
+
+## Free trial
+The app runs for 14 days without a serial (see `trial_status` in `app/licensing.py`). After that it asks for a serial number. Client-side trials can be bypassed by a determined user.
