@@ -21,6 +21,7 @@ AR = {
     "Activated. Thank you!": "تم التفعيل. شكراً لك!",
     "Licensed to this computer – Device ID: {d}": "مُرخّص لهذا الجهاز – رقم الجهاز: {d}",
     "Expires: {d}": "ينتهي في: {d}",
+    "Request serial": "اطلب السيريال",
     "Continue trial ({n} days left)": "متابعة التجربة (متبقي {n} يوم)",
     "Free trial – {n} days left – Device ID: {d}": "نسخة تجريبية – متبقي {n} يوم – رقم الجهاز: {d}",
     "Your 14-day free trial has ended. Please enter a serial number.": "انتهت فترة التجربة المجانية (14 يوماً). يرجى إدخال رقم تسلسلي.",

@@ -26,6 +26,7 @@ from i18n import T, is_rtl, set_language
 APP_NAME = "Maria Free Download"
 VERSION = "1.11.1"
 CONTACT_EMAIL = "alsfarly2@gmail.com"
+CONTACT_WHATSAPP = "9647764994170"     # international format, digits only
 COPYRIGHT_EN = "© 2026 Maria Free Download – All rights reserved – Mosul, Iraq"
 COPYRIGHT_AR = "© 2026 جميع الحقوق محفوظة – الموصل، العراق"
 
@@ -845,7 +846,7 @@ class ActivationDialog(QDialog):
         super().__init__()
         self.setWindowTitle(f"{APP_NAME} – {T('Activation')}")
         self.setWindowIcon(QIcon(resource(os.path.join("assets", "jdm.ico"))))
-        self.setMinimumWidth(580)
+        self.setMinimumWidth(680)
         logo = QLabel()
         logo.setPixmap(logo_pixmap(90))
         logo.setAlignment(Qt.AlignCenter)
@@ -879,8 +880,15 @@ class ActivationDialog(QDialog):
         act.clicked.connect(self._activate)
         quit_ = QPushButton(T("Quit"))
         quit_.clicked.connect(self.reject)
+        wa = QPushButton("WhatsApp")
+        wa.setMinimumWidth(110)
+        wa.setToolTip(T("Request serial"))
+        wa.setStyleSheet("QPushButton { background: #16a34a; color: white; border: none; border-radius: 5px; "
+                         "padding: 4px 12px; font-weight: 600; } QPushButton:hover { background: #15803d; }")
+        wa.clicked.connect(self._whatsapp)
         row = QHBoxLayout()
         row.addWidget(terms)
+        row.addWidget(wa)
         row.addStretch(1)
         row.addWidget(quit_)
         if trial_left > 0:
@@ -898,6 +906,11 @@ class ActivationDialog(QDialog):
         lay.addWidget(self.serial)
         lay.addWidget(self.msg)
         lay.addLayout(row)
+
+    def _whatsapp(self):
+        from urllib.parse import quote
+        msg = f"{APP_NAME}\nDevice ID: {licensing.device_id()}\nأرغب بالحصول على رقم تسلسلي (سيريال) لهذا الجهاز."
+        QDesktopServices.openUrl(QUrl(f"https://wa.me/{CONTACT_WHATSAPP}?text={quote(msg)}"))
 
     def _terms(self):
         for p in (os.path.join(app_dir(), "EULA_Terms_of_Use.rtf"),
