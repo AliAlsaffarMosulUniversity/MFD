@@ -1,0 +1,9 @@
+# NEVER commit private keys or the list of issued serials
+*.pem
+issued_serials.csv
+MariaKeys/
+__pycache__/
+dist/
+build/
+*.spec
+installer/Output/

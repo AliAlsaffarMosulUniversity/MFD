@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font: 13px system-ui, sans-serif; width: 260px; margin: 0; padding: 14px; color: #1f2937; }
+  h1 { font-size: 15px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+  h1 img { width: 30px; height: 30px; border-radius: 50%; }
+  .row { display: flex; justify-content: space-between; align-items: center; margin: 9px 0; }
+  input[type=number], input[type=text] { width: 90px; padding: 3px 5px; }
+  #status { font-size: 12px; padding: 6px 8px; border-radius: 6px; background: #f3f4f6; }
+  .on { color: #0f766e; } .off { color: #b91c1c; }
+  small { color: #6b7280; }
+</style>
+</head>
+<body>
+  <h1><img src="icons/icon48.png" alt="">Maria Free Download</h1>
+  <div id="status">Checking Maria Free Download…</div>
+  <div class="row"><label for="enabled">Capture downloads</label><input type="checkbox" id="enabled"></div>
+  <div class="row"><label for="hoverButton">"Download Now" over videos</label><input type="checkbox" id="hoverButton"></div>
+  <div class="row"><label for="minSizeKB">Ignore files smaller than (KB)</label><input type="number" id="minSizeKB" min="0"></div>
+  <div class="row"><label for="skipExt">Ignore types</label><input type="text" id="skipExt" placeholder="jpg,png"></div>
+  <small>When Maria Free Download is closed, the browser downloads normally.</small>
+  <p style="margin:10px 0 0;font-size:11px;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:8px"><svg width="27" height="18" viewBox="0 0 27 18" style="vertical-align:middle;margin-bottom:4px;border:1px solid #d1d5db" aria-label="Iraq flag"><rect width="27" height="6" fill="#CE1126"/><rect y="6" width="27" height="6" fill="#fff"/><rect y="12" width="27" height="6" fill="#000"/><text x="13.5" y="10.6" font-size="5" font-weight="700" fill="#007A3D" text-anchor="middle" font-family="Arial">الله أكبر</text></svg><br>© 2026 Maria Free Download – All rights reserved – Mosul, Iraq<br>alsfarly2@gmail.com</p>
+  <script src="popup.js"></script>
+</body>
+</html>

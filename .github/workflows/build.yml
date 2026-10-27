@@ -1,0 +1,37 @@
+name: Build Windows Installer
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Build
+        shell: pwsh
+        run: |
+          $ver = "1.1.0"
+          if ("${{ github.ref_type }}" -eq "tag") { $ver = "${{ github.ref_name }}".TrimStart("v") }
+          ./scripts/build.ps1 -Version $ver
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JDM-Setup
+          path: installer/Output/*.exe
+
+      - name: Publish release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: installer/Output/*.exe
