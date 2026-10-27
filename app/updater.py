@@ -13,7 +13,7 @@ import requests
 # repository whose Releases hold MariaFreeDownload-Setup-X.Y.Z.exe
 # NOTE: releases of a PRIVATE repository cannot be downloaded without a token, so auto-update only works with a
 # public releases repository. Set this to the repo you publish installers to.
-UPDATE_REPO = "AliAlsaffarMosulUniversity/measures"
+UPDATE_REPO = "AliAlsaffarMosulUniversity/MFD-Download"
 API = "https://api.github.com/repos/{repo}/releases/latest"
 
 

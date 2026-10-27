@@ -30,8 +30,13 @@ jobs:
           name: JDM-Setup
           path: installer/Output/*.exe
 
-      - name: Publish release
+      # The installer is published to a separate PUBLIC repository, so this source repository can stay private.
+      # Needs a secret named RELEASES_TOKEN (fine-grained token, "Contents: Read and write" on MFD-Download only).
+      - name: Publish release to the public download repository
         if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
+          repository: AliAlsaffarMosulUniversity/MFD-Download
+          token: ${{ secrets.RELEASES_TOKEN }}
+          tag_name: ${{ github.ref_name }}
           files: installer/Output/*.exe

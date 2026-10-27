@@ -60,7 +60,7 @@ tests/           engine tests
 © 2026 All rights reserved to the programmer Ali Abdulwahab Al-Saffar – Mosul, Iraq.
 Email: alsfarly2@gmail.com · Support free service software – MasterCard: 2144558406
 
-## Download page
-`docs/index.html` is a one-click download page. The button always points to the newest installer in the Releases
-of the repository named in `REPO` (top of its script). To publish it: *Settings -> Pages -> Deploy from a branch ->
-`main` / `/docs`* (GitHub Pages needs a public repository on the free plan).
+## Download page and releases
+Installers are published (by the workflow, on a `v*` tag) to the PUBLIC repository `MFD-Download`, which also hosts the
+one-click download page with GitHub Pages. This repository can therefore stay private.
+Required secret in this repository: `RELEASES_TOKEN` (fine-grained token with *Contents: Read and write* on `MFD-Download`).
