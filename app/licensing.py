@@ -136,9 +136,18 @@ def _clean_display(serial):
 def status(data_dir):
     """(ok, message, expiry) of the license stored on this computer."""
     s = load_saved(data_dir)
-    if not s:
-        return False, "No serial number has been entered yet.", None
-    return check_serial(s)
+    if s:
+        return check_serial(s)
+    try:                                               # code activated online (printed serial)
+        import online_activation
+        ok, msg = online_activation.local_status(data_dir)
+        if ok:
+            return True, "OK", None
+        if not msg.startswith("No serial"):
+            return False, msg, None
+    except Exception:
+        pass
+    return False, "No serial number has been entered yet.", None
 
 
 # ------------------------------------------------------------ 14-day free trial

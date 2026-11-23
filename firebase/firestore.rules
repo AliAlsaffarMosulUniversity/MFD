@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // One document per printed serial: serials/{CODE}
+    match /serials/{code} {
+      // A code can be read only by someone who already knows it (no listing / no browsing).
+      allow get: if true;
+      allow list: if false;
+
+      // The ONLY allowed write: claim an unused code once (device must be empty, 16 chars).
+      allow update: if resource.data.get('device', null) == null
+                    && request.resource.data.device is string
+                    && request.resource.data.device.size() == 16
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['device', 'activatedAt']);
+
+      allow create, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

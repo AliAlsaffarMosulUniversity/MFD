@@ -921,6 +921,18 @@ class ActivationDialog(QDialog):
 
     def _activate(self):
         text = self.serial.toPlainText()
+        import online_activation as OA
+        if OA.looks_like_online_code(text):            # printed code: claim it online (one computer only)
+            self.msg.setText(T("Contacting the activation server..."))
+            QApplication.processEvents()
+            r = OA.claim(text)
+            if r in (OA.OK, OA.ALREADY_MINE):
+                OA.save_local(data_dir(), text)
+                QMessageBox.information(self, APP_NAME, T("Activated. Thank you!"))
+                self.accept()
+            else:
+                self.msg.setText(T(OA.MESSAGES[r]))
+            return
         ok, why, _exp = licensing.check_serial(text)
         if not ok:
             self.msg.setText(T(why))

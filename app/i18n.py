@@ -3,6 +3,11 @@
 LANG = "en"
 
 AR = {
+    # online activation
+    "Contacting the activation server...": "جارٍ الاتصال بخادم التفعيل...",
+    "This code has already been used on another computer.": "هذا الرمز مستخدم مسبقاً على حاسوب آخر.",
+    "Could not reach the activation server. Check your internet connection and try again.": "تعذّر الاتصال بخادم التفعيل. تحقق من الإنترنت وحاول مرة أخرى.",
+    "Online activation is not configured in this build.": "التفعيل عبر الإنترنت غير مهيّأ في هذه النسخة.",
     # activation (v2.0)
     "Activation": "التفعيل",
     "Activate your copy": "فعّل نسختك",
