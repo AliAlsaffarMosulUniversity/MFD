@@ -46,12 +46,12 @@ license_key.PUBLIC_KEY = ""
 assert not L.check_serial(s)[0]
 print("license tests OK  | serial length:", len(s), "| device id:", d)
 
-# 8. 14-day free trial
+# 8. 10-day free trial
 import tempfile
 _ld = os.environ.get("LOCALAPPDATA"); os.environ["LOCALAPPDATA"] = tempfile.mkdtemp()
 td = tempfile.mkdtemp(); d0 = datetime.date(2026, 10, 28)
-assert L.trial_status(td, d0) == (True, 14)
-assert L.trial_status(td, d0 + datetime.timedelta(days=13)) == (True, 1)
-assert L.trial_status(td, d0 + datetime.timedelta(days=14)) == (False, 0)
+assert L.trial_status(td, d0) == (True, 10)
+assert L.trial_status(td, d0 + datetime.timedelta(days=9)) == (True, 1)
+assert L.trial_status(td, d0 + datetime.timedelta(days=10)) == (False, 0)
 assert L.trial_status(td, d0 + datetime.timedelta(days=2)) == (False, 0), "clock rollback must not extend the trial"
 print("trial OK")
