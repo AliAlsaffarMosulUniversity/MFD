@@ -25,7 +25,6 @@ from i18n import T, is_rtl, set_language
 
 APP_NAME = "Maria Free Download"
 VERSION = "1.11.1"
-CONTACT_EMAIL = "alsfarly2@gmail.com"
 CONTACT_WHATSAPP = "9647764994170"     # international format, digits only
 COPYRIGHT_EN = "© 2026 Maria Free Download – All rights reserved – Mosul, Iraq"
 COPYRIGHT_AR = "© 2026 جميع الحقوق محفوظة – الموصل، العراق"
@@ -148,7 +147,10 @@ def modern_css(theme):
     c = UI["dark" if theme == "dark" else "light"]
     grad = f"qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 {c['accent']}, stop:1 {c['accent2']})"
     return f"""
-    QMainWindow, QDialog {{ background: {c['bg']}; }}
+    QMainWindow, QDialog, QMessageBox {{ background: {c['bg']}; }}
+    QLabel, QCheckBox, QRadioButton, QGroupBox {{ color: {c['text']}; }}
+    QLineEdit, QPlainTextEdit, QTextEdit, QComboBox, QSpinBox {{ color: {c['text']}; }}
+    QMenuBar {{ color: {c['text']}; }}
     QToolTip {{ color: {c['text']}; background: {c['surface']}; border: 1px solid {c['border']};
                 border-radius: 6px; padding: 4px 6px; }}
     QToolBar {{ background: {c['surface']}; border: none; border-bottom: 1px solid {c['border']};
@@ -233,6 +235,9 @@ def apply_theme(app, theme):
         for role in (QPalette.Window, QPalette.Base, QPalette.Button):
             p.setColor(role, QColor("#ffffff"))
         p.setColor(QPalette.AlternateBase, QColor("#fcf9fa"))
+        for role in (QPalette.WindowText, QPalette.Text, QPalette.ButtonText, QPalette.ToolTipText):
+            p.setColor(role, QColor("#1f2937"))
+        p.setColor(QPalette.PlaceholderText, QColor("#6b7280"))
         p.setColor(QPalette.Highlight, QColor("#7b1e3a"))
         p.setColor(QPalette.HighlightedText, QColor("#ffffff"))
         app.setPalette(p)
@@ -853,8 +858,8 @@ class ActivationDialog(QDialog):
         title = QLabel(f"<b>{T('Activate your copy')}</b>")
         title.setAlignment(Qt.AlignCenter)
         title.setStyleSheet("font-size: 16px;")
-        info = QLabel(T("Send your Device ID to {mail} to receive your serial number. "
-                        "A serial number works on one computer only.", mail=CONTACT_EMAIL))
+        info = QLabel(T("Enter the activation code printed with your copy, or press WhatsApp to request a serial number. "
+                        "A serial number works on one computer only."))
         info.setWordWrap(True)
         self.dev = QLineEdit(licensing.device_id())
         self.dev.setReadOnly(True)
@@ -1064,7 +1069,7 @@ class MainWindow(QMainWindow):
                 t.setColumnWidth(i, w)
         self.table = t
 
-        # footer: copyright on one side; flag above the e-mail on the other
+        # footer: copyright on one side; flag on the other
         footer = QFrame()
         footer.setObjectName("footer")
         footer.setStyleSheet(footer_css(self.settings.get("theme", "light")))
@@ -1086,12 +1091,6 @@ class MainWindow(QMainWindow):
         right.addWidget(flag, 0, Qt.AlignHCenter)
         row = QHBoxLayout()
         row.setSpacing(10)
-        mail = QLabel()
-        self.mail_label = mail
-        self._set_mail_html()
-        mail.setOpenExternalLinks(True)
-        mail.setLayoutDirection(Qt.LeftToRight)
-        row.addWidget(mail)
         right.addLayout(row)
         fl.addLayout(right)
 
@@ -1349,16 +1348,10 @@ class MainWindow(QMainWindow):
             self.theme_action.setIcon(theme_icon("moon", "#334155"))
             self.theme_action.setText(T("Dark mode"))
 
-    def _set_mail_html(self):
-        col = "#38bdf8" if self.settings.get("theme") == "dark" else "#0e7490"
-        self.mail_label.setText(f"<a href='mailto:{CONTACT_EMAIL}' style='color:{col};text-decoration:none'>"
-                                f"✉ {CONTACT_EMAIL}</a>")
-
     def set_theme(self, theme):
         self.settings["theme"] = theme
         apply_theme(QApplication.instance(), theme)
         self.footer.setStyleSheet(footer_css(theme))
-        self._set_mail_html()
         self._update_theme_action()
         save_settings(self.settings)
         self._action_state = {}
@@ -1516,7 +1509,7 @@ class MainWindow(QMainWindow):
         dd = T("found") if self.settings.get("deno_path") else T("not found")
         box.setText(
             f"<b>{APP_NAME}</b> {VERSION}<br>{copyright_text()}<br><br>"
-            f"{T('Email:')} <a href='mailto:{CONTACT_EMAIL}'>{CONTACT_EMAIL}</a><br><br>"
+            f"<br>"
             f"{self._license_line()}<br>"
             f"{T('Multi-connection downloads, pause/resume, scheduler, speed limiter, browser capture, video downloads and a built-in media player.')}"
             f"<br><br>FFmpeg: {ff}<br>Deno: {dd}")
@@ -1756,7 +1749,7 @@ def main():
         t_active, t_left = licensing.trial_status(data_dir())
         if not t_active or t_left <= 3:                # trial over (or ending soon): ask for a serial
             reason = T(why) if not why.startswith("No serial") else \
-                ("" if t_active else T("Your 14-day free trial has ended. Please enter a serial number."))
+                ("" if t_active else T("Your 10-day free trial has ended. Please enter a serial number."))
             dlg = ActivationDialog(reason, trial_left=t_left if t_active else 0)
             if dlg.exec() != QDialog.Accepted and not t_active:
                 return 0

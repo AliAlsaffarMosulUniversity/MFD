@@ -18,8 +18,8 @@ AR = {
     "Your Device ID": "رقم جهازك (Device ID)",
     "Serial number": "الرقم التسلسلي",
     "Paste your serial number here": "الصق الرقم التسلسلي هنا",
-    "Send your Device ID to {mail} to receive your serial number. A serial number works on one computer only.":
-        "أرسل رقم جهازك إلى {mail} لتستلم الرقم التسلسلي. الرقم التسلسلي يعمل على جهاز واحد فقط.",
+    "Enter the activation code printed with your copy, or press WhatsApp to request a serial number. A serial number works on one computer only.":
+        "أدخل رمز التفعيل المطبوع مع نسختك، أو اضغط WhatsApp لطلب رقم تسلسلي. الرقم التسلسلي يعمل على جهاز واحد فقط.",
     "The serial number is not valid.": "الرقم التسلسلي غير صحيح.",
     "This serial number belongs to another computer.": "هذا الرقم التسلسلي مخصص لجهاز آخر.",
     "No serial number has been entered yet.": "لم يتم إدخال رقم تسلسلي بعد.",
@@ -29,7 +29,7 @@ AR = {
     "Request serial": "اطلب السيريال",
     "Continue trial ({n} days left)": "متابعة التجربة (متبقي {n} يوم)",
     "Free trial – {n} days left – Device ID: {d}": "نسخة تجريبية – متبقي {n} يوم – رقم الجهاز: {d}",
-    "Your 14-day free trial has ended. Please enter a serial number.": "انتهت فترة التجربة المجانية (14 يوماً). يرجى إدخال رقم تسلسلي.",
+    "Your 10-day free trial has ended. Please enter a serial number.": "انتهت فترة التجربة المجانية (10 أيام). يرجى إدخال رقم تسلسلي.",
     # modern sidebar (v1.11)
     "LIBRARY": "المكتبة",
     "Conn.": "الاتصالات",

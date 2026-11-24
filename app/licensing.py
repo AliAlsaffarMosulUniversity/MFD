@@ -150,8 +150,8 @@ def status(data_dir):
     return False, "No serial number has been entered yet.", None
 
 
-# ------------------------------------------------------------ 14-day free trial
-TRIAL_DAYS = 14
+# ------------------------------------------------------------ 10-day free trial
+TRIAL_DAYS = 10
 _TRIAL_SALT = b"MFD-TRIAL|v1|"
 
 
