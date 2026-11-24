@@ -43,6 +43,7 @@ Name: "startup";     Description: "Start Maria Free Download with Windows (in th
 Source: "..\dist\MariaFreeDownload\*";     DestDir: "{app}";           Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\extension\*";    DestDir: "{app}\extension"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "EULA_Terms_of_Use.rtf"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README.html"; DestDir: "{app}"; Flags: ignoreversion isreadme
 
 [InstallDelete]
 ; remove leftovers of the old name (Jazira Download Manager / JDM)
@@ -53,6 +54,7 @@ Type: filesandordirs; Name: "{autoprograms}\Jazira Download Manager"
 
 [Icons]
 Name: "{group}\{#MyAppName}";              Filename: "{app}\{#MyAppExe}"
+Name: "{group}\README";                    Filename: "{app}\README.html"
 Name: "{group}\Browser Extension Folder";  Filename: "{app}\extension"
 Name: "{group}\Uninstall {#MyAppName}";    Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}";        Filename: "{app}\{#MyAppExe}"; Tasks: desktopicon
